@@ -55,8 +55,10 @@ public class RecipePageTest {
             
             // Start the backend programmatically
             int port = 8081;
-            app = Main.main(new String[] { String.valueOf(port) });
-            
+            // app = Main.main(new String[] { String.valueOf(port) });
+
+            app = Main.startServer(port, true);
+
             // 1. Detect browser and driver
             BrowserConfig browserConfig = detectBrowserAndDriver();
             browserType = browserConfig.browserType;

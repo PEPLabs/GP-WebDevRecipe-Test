@@ -4,40 +4,40 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recipes - Recipe Management App</title>
-    <link rel="stylesheet" href="recipe-page.css">
-</head>
+    <link rel="stylesheet" href="recipe-page.css" />
+  </head>
 
-<body>
+  <body>
+    <a href="../ingredients/ingredient-page.html" hidden id="admin-link"
+      >Edit Ingredients</a
+    >
+    <button id="logout-button" hidden>Logout</button>
 
-<a href="../ingredients/ingredient-page.html" style="display: none;" id="admin-link">Edit Ingredients</a>
-<button id="logout-button" hidden>Logout</button>
+    <h1>Recipe Management</h1>
 
-<h1>Recipe Management</h1>
+    <!-- 1. Create an h1 element with the text "Recipes" -->
 
-<!-- 1. Create an h1 element with the text "Recipes" -->
+    <h1>Recipes</h1>
 
-<h1>Recipes</h1>
-
-<!-- Search a Recipe Requirement
+    <!-- Search a Recipe Requirement
 
    - Create an H2 element containing the text "Search a Recipe"
    - Create an input element with an id of "search-recipe-name-input"
    - Create a button element with the id of "search-recipe-submit-input" and with the text content of "Search Recipe"
 
    -->
-<h2>Search a Recipe</h2>
-<input id = "search-input">
-<button id = "search-button">search!</button>
-<!-- 2. Create a <ul> tag with the id "recipe-list" -->
+    <h2>Search a Recipe</h2>
+    <input id="search-input" />
+    <button id="search-button">search!</button>
+    <!-- 2. Create a <ul> tag with the id "recipe-list" -->
 
-<ul id="recipe-list"></ul>
+    <ul id="recipe-list"></ul>
 
-<!-- Add a Recipe Requirement
+    <!-- Add a Recipe Requirement
 
 3. Create an H2 element containing the text "Add a Recipe"
 4. Create an input element with an id of "add-recipe-name-input"
@@ -45,13 +45,15 @@
 
 -->
 
-<h2>Add a Recipe</h2>
-<input type="text" id="add-recipe-name-input" placeholder="Recipe Name">
-<textarea id="add-recipe-instructions-input" placeholder="Recipe Instructions"></textarea>
-<button id="add-recipe-submit-input">Add Recipe</button>
+    <h2>Add a Recipe</h2>
+    <input type="text" id="add-recipe-name-input" placeholder="Recipe Name" />
+    <textarea
+      id="add-recipe-instructions-input"
+      placeholder="Recipe Instructions"
+    ></textarea>
+    <button id="add-recipe-submit-input">Add Recipe</button>
 
-
-<!-- Update a Recipe Requirement
+    <!-- Update a Recipe Requirement
 
 7. Create an H2 element containing the text "Update a Recipe"
 8. Create an input element with an id of "update-recipe-name-input"
@@ -60,13 +62,19 @@
 
 -->
 
-<h2>Update a Recipe</h2>
-<input type="text" id="update-recipe-name-input" placeholder="Recipe Name">
-<textarea id="update-recipe-instructions-input" placeholder="Updated Instructions"></textarea>
-<button id="update-recipe-submit-input">Update Recipe</button>
+    <h2>Update a Recipe</h2>
+    <input
+      type="text"
+      id="update-recipe-name-input"
+      placeholder="Recipe Name"
+    />
+    <textarea
+      id="update-recipe-instructions-input"
+      placeholder="Updated Instructions"
+    ></textarea>
+    <button id="update-recipe-submit-input">Update Recipe</button>
 
-
-<!-- Delete a Recipe Requirement
+    <!-- Delete a Recipe Requirement
 
 11. Create an H2 element containing the text "Delete a Recipe"
 12. Create an input element with an id of "delete-recipe-name-input"
@@ -74,13 +82,14 @@
 
 -->
 
+    <h2>Delete a Recipe</h2>
+    <input
+      type="text"
+      id="delete-recipe-name-input"
+      placeholder="Recipe Name"
+    />
+    <button id="delete-recipe-submit-input">Delete Recipe</button>
 
-<h2>Delete a Recipe</h2>
-<input type="text" id="delete-recipe-name-input" placeholder="Recipe Name">
-<button id="delete-recipe-submit-input">Delete Recipe</button>
-
-
-<script src="recipe-page.js"></script>
-</body>
-
+    <script src="recipe-page.js"></script>
+  </body>
 </html>

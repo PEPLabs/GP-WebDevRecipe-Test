@@ -67,7 +67,9 @@ public class AdminTest {
 
             // Start the backend programmatically
             int port = 8081;
-            app = Main.main(new String[] { String.valueOf(port) });
+            // app = Main.main(new String[] { String.valueOf(port) });
+
+            app = Main.startServer(port, true);
 
             // Starting the static Javalin Server
 
@@ -466,17 +468,19 @@ public class AdminTest {
         passwordInput.sendKeys("redbarron");
         loginButton.click();
 
-
         wait.until(ExpectedConditions.urlContains("recipe-page"));
 
+        // String isAdmin = (String) js.executeScript("return
+        // window.sessionStorage.getItem('is-admin');");
+        wait.until(d -> ((JavascriptExecutor) d)
+                .executeScript("return window.sessionStorage.getItem('is-admin') !== null;"));
         String isAdmin = (String) js.executeScript("return window.sessionStorage.getItem('is-admin');");
+
         assertEquals("false", isAdmin);
 
-
         WebElement adminLink = driver.findElement(By.id("admin-link"));
-        //Assert
+        // Assert
         Assertions.assertFalse(adminLink.isDisplayed());
-
 
         performLogout();
     }
@@ -503,6 +507,10 @@ public class AdminTest {
 
         wait.until(ExpectedConditions.urlContains("recipe-page"));
 
+        // String isAdmin = (String) js.executeScript("return
+        // window.sessionStorage.getItem('is-admin');");
+        wait.until(d -> ((JavascriptExecutor) d)
+                .executeScript("return window.sessionStorage.getItem('is-admin') !== null;"));
         String isAdmin = (String) js.executeScript("return window.sessionStorage.getItem('is-admin');");
         assertEquals("true", isAdmin);
 
@@ -532,7 +540,11 @@ public class AdminTest {
         wait.until(ExpectedConditions.urlContains("recipe-page"));
         Thread.sleep(1000);
 
-        driver.findElement(By.id("admin-link")).click();
+        // driver.findElement(By.id("admin-link")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("admin-link")));
+        WebElement adminLink = driver.findElement(By.id("admin-link"));
+        adminLink.click();
+
         Thread.sleep(1000);
 
         WebElement list = driver.findElement(By.id("ingredient-list"));
@@ -576,7 +588,11 @@ public class AdminTest {
         wait.until(ExpectedConditions.urlContains("recipe-page"));
         Thread.sleep(1000);
 
-        driver.findElement(By.id("admin-link")).click();
+        // driver.findElement(By.id("admin-link")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("admin-link")));
+        WebElement adminLink = driver.findElement(By.id("admin-link"));
+        adminLink.click();
+
         Thread.sleep(1000);
 
         WebElement nameInput = driver.findElement(By.id("add-ingredient-name-input"));
@@ -644,6 +660,3 @@ public class AdminTest {
     }
 
 }
-
-
-

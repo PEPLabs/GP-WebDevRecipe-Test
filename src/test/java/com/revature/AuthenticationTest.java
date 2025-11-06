@@ -63,7 +63,9 @@ public class AuthenticationTest {
             printEnvironmentInfo();
 
             int port = 8081;
-            app = Main.main(new String[] { String.valueOf(port) });
+            // app = Main.main(new String[] { String.valueOf(port) });
+            app = Main.startServer(port, true);
+
 
             // Starting the static Javalin Server
 

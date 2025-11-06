@@ -60,8 +60,8 @@ public class JavalinAppUtil {
      */
     public Javalin getApp() {
         Javalin app = Javalin.create(config -> {
-            config.plugins.enableCors(cors -> {
-                cors.add(it -> {
+            config.bundledPlugins.enableCors(cors -> {
+                cors.addRule(it -> {
                     it.anyHost();
                 });
 

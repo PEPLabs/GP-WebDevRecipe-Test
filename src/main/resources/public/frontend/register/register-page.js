@@ -25,52 +25,53 @@ registerButton.onclick = processRegistration;
  *   - If passwords do not match, alerts the user of the mismatch.
  */
 async function processRegistration() {
-    // Get values from input fields
-    const username = usernameInput.value;
-    const email = emailInput.value;
-    const password = passwordInput.value;
-    const repeatPassword = repeatPasswordInput.value;
+  // Get values from input fields
+  const username = usernameInput.value;
+  const email = emailInput.value;
+  const password = passwordInput.value;
+  const repeatPassword = repeatPasswordInput.value;
 
-    // Check if passwords match
-    if (password !== repeatPassword) {
-        alert("Passwords do not match!");
-        return;
+  // Check if passwords match
+  if (password !== repeatPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  // Create the registration object
+  const registerBody = { username, email, password };
+
+  // Define the request configuration
+  const requestOptions = {
+    method: "POST",
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "same-origin",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: JSON.stringify(registerBody),
+  };
+
+  try {
+    // Send registration request to the server
+    const response = await fetch(
+      "http://localhost:8081/register",
+      requestOptions
+    );
+
+    if (response.status === 201) {
+      // Registration successful, redirect to login page
+      window.location.href = "../login/login-page.html";
+    } else if (response.status === 409) {
+      // Registration failed, alert the user
+      alert("Registration failed: Username or email already exists.");
+    } else {
+      alert("An error occurred during registration.");
     }
-
-    // Create the registration object
-    const registerBody = { username, email, password };
-
-    // Define the request configuration
-    const requestOptions = {
-        method: "POST",
-        mode: "cors",
-        cache: "no-cache",
-        credentials: "same-origin",
-        headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "*"
-        },
-        redirect: "follow",
-        referrerPolicy: "no-referrer",
-        body: JSON.stringify(registerBody)
-    };
-
-    try {
-        // Send registration request to the server
-        const response = await fetch("http://localhost:8081/register", requestOptions);
-
-        if (response.status === 201) {
-            // Registration successful, redirect to login page
-            window.location.href = "login-page.html";
-        } else if (response.status === 409) {
-            // Registration failed, alert the user
-            alert("Registration failed: Username or email already exists.");
-        } else {
-            alert("An error occurred during registration.");
-        }
-    } catch (error) {
-        console.error("Error during registration process:", error);
-        alert("An error occurred. Please try again.");
-    }
+  } catch (error) {
+    console.error("Error during registration process:", error);
+    alert("An error occurred. Please try again.");
+  }
 }
