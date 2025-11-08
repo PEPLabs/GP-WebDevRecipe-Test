@@ -556,12 +556,14 @@ public class RecipePersistenceTest {
         deleteButton.click();
 
         // check recipe list
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("recipe-list")));
-        WebElement recipeList = driver.findElement(By.id("recipe-list"));
-        String innerHTML = recipeList.getAttribute("innerHTML");
+        boolean recipeDeleted = wait.until(driver -> {
+            WebElement recipeList = driver.findElement(By.id("recipe-list"));
+            String html = recipeList.getAttribute("innerHTML");
+            return !html.contains("stone soup");
+        });
 
         // make assertion: deleted recipe should not be in list
-        assertFalse(innerHTML.contains("stone soup"), "Expected recipe to be deleted.");
+        assertTrue(recipeDeleted, "Expected recipe to be deleted and no longer visible in the list.");
 
     }
 
