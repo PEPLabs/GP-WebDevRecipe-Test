@@ -86,7 +86,7 @@ public class RecipeDAO {
         String sql = String.format("SELECT * FROM RECIPE ORDER BY %s %s", pageOptions.getSortBy(),
                 pageOptions.getSortDirection());
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
             return pageResults(resultSet, pageOptions);
         } catch (SQLException e) {
@@ -106,7 +106,7 @@ public class RecipeDAO {
     public List<Recipe> searchRecipesByTerm(String term) {
         String sql = "SELECT * FROM RECIPE WHERE name LIKE ?";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, "%" + term + "%");
             ResultSet resultSet = statement.executeQuery();
             return mapRows(resultSet);
@@ -127,7 +127,7 @@ public class RecipeDAO {
     public List<Recipe> searchRecipesByIngredient(String ingredient) {
         String sql = "SELECT r.id, r.name, r.instructions FROM recipe r JOIN recipe_ingredient ir ON r.id = ir.recipe_id JOIN ingredient i ON ir.ingredient_id = i.id WHERE i.name LIKE ?;";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, "%" + ingredient + "%");
             ResultSet resultSet = statement.executeQuery();
             return mapRows(resultSet);
@@ -151,7 +151,7 @@ public class RecipeDAO {
         String sql = String.format("SELECT * FROM RECIPE WHERE name LIKE ? ORDER BY %s %s", pageOptions.getSortBy(),
                 pageOptions.getSortDirection());
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, "%" + term + "%");
             ResultSet resultSet = statement.executeQuery();
             return pageResults(resultSet, pageOptions);
@@ -171,7 +171,7 @@ public class RecipeDAO {
     public Recipe getRecipeById(int id) {
         String sql = "SELECT * FROM RECIPE WHERE id = ?";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
 
@@ -196,7 +196,7 @@ public class RecipeDAO {
         int generatedId = 0;
 
         try (Connection conn = connectionUtil.getConnection();
-             PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement statement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             statement.setString(1, recipe.getName());
             statement.setString(2, recipe.getInstructions());
@@ -223,7 +223,7 @@ public class RecipeDAO {
     public void updateRecipe(Recipe recipe) {
         String sql = "UPDATE RECIPE SET instructions = ?, chef_id = ? WHERE id = ?";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, recipe.getInstructions());
             statement.setInt(2, recipe.getAuthor().getId());
             statement.setInt(3, recipe.getId());
@@ -245,7 +245,7 @@ public class RecipeDAO {
         try (Connection connection = connectionUtil.getConnection()) {
             connection.setAutoCommit(false);
             try (PreparedStatement ingredientStatement = connection.prepareStatement(ingredientSql);
-                 PreparedStatement statement = connection.prepareStatement(sql)) {
+                    PreparedStatement statement = connection.prepareStatement(sql)) {
                 ingredientStatement.setInt(1, recipe.getId());
                 ingredientStatement.executeUpdate();
                 statement.setInt(1, recipe.getId());
@@ -260,20 +260,22 @@ public class RecipeDAO {
         }
     }
 
-    // below are two extra methods that we don't test for. Not provided in student boilerplate.
-    
+    // below are two extra methods that we don't test for. Not provided in student
+    // boilerplate.
+
     /**
      * Retrieves a list of ingredients associated with a specific recipe.
      *
      * @param id the unique identifier of the recipe.
      * @return a list of RecipeIngredient objects for the specified recipe.
      */
+    @SuppressWarnings("unused")
     private List<RecipeIngredient> getIngredients(int id) {
 
         String sql = "SELECT ingredient_id, vol, unit FROM RECIPE_INGREDIENT WHERE recipe_id = ?";
         List<RecipeIngredient> ingredients = new LinkedList<RecipeIngredient>();
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -295,12 +297,13 @@ public class RecipeDAO {
      *
      * @param recipe the Recipe object containing the ingredients to be saved
      */
+    @SuppressWarnings("unused")
     private void saveIngredients(Recipe recipe) {
 
         String sql = "INSERT INTO RECIPE_INGREDIENT (recipe_id, ingredient_id, vol, unit) VALUES (?,?,?,?)";
         for (RecipeIngredient i : recipe.getIngredients()) {
             try (Connection connection = connectionUtil.getConnection();
-                 PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                    PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 statement.setInt(1, recipe.getId());
                 statement.setInt(2, i.getId());
                 statement.setString(3, i.getName());
