@@ -14,28 +14,33 @@ import com.revature.util.Page;
 import com.revature.util.PageOptions;
 
 /**
- * Data Access Object (DAO) for performing CRUD operations on Chef entities. This class provides methods to create, read, update, and delete Chef records in the database.
+ * Data Access Object (DAO) for performing CRUD operations on Chef entities.
+ * This class provides methods to create, read, update, and delete Chef records
+ * in the database.
  */
 public class ChefDAO {
 
     /** A utility class for establishing connections to the database. */
-    @SuppressWarnings("unused")
+
     private ConnectionUtil connectionUtil;
 
-    /** Constructs a ChefDAO with the specified ConnectionUtil for database connectivity.
+    /**
+     * Constructs a ChefDAO with the specified ConnectionUtil for database
+     * connectivity.
      *
      * @param connectionUtil the utility used to connect to the database
      */
     public ChefDAO(ConnectionUtil connectionUtil) {
         this.connectionUtil = connectionUtil;
     }
+
     /**
      * Retrieves all Chef records from the database.
      *
      * @return a list of all Chef objects.
      */
     public List<Chef> getAllChefs() {
-        try  {
+        try {
             Connection connection = connectionUtil.getConnection();
             Statement statement = connection.createStatement();
             String sql = "SELECT * FROM CHEF ORDER BY id";
@@ -146,7 +151,7 @@ public class ChefDAO {
      */
     public void deleteChef(Chef chef) {
         String sql = "DELETE FROM CHEF WHERE id = ?";
-        try  {
+        try {
             Connection connection = connectionUtil.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setInt(1, chef.getId());
@@ -164,7 +169,7 @@ public class ChefDAO {
      */
     public List<Chef> searchChefsByTerm(String term) {
         String sql = "SELECT * FROM CHEF WHERE username LIKE ?";
-        try  {
+        try {
             Connection connection = connectionUtil.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, "%" + term + "%");
@@ -178,16 +183,17 @@ public class ChefDAO {
     }
 
     /**
-     * Searches for Chef records by a search term in the username with pagination options.
+     * Searches for Chef records by a search term in the username with pagination
+     * options.
      *
-     * @param term the search term to filter Chef usernames.
+     * @param term        the search term to filter Chef usernames.
      * @param pageOptions options for pagination and sorting.
      * @return a Page of Chef objects containing the retrieved chefs.
      */
     public Page<Chef> searchChefsByTerm(String term, PageOptions pageOptions) {
         String sql = String.format("SELECT * FROM CHEF WHERE name LIKE ? ORDER BY %s %s", pageOptions.getSortBy(),
                 pageOptions.getSortDirection());
-        try{
+        try {
             Connection connection = connectionUtil.getConnection();
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, "%" + term + "%");
@@ -236,7 +242,7 @@ public class ChefDAO {
     /**
      * Paginates the results of a ResultSet into a Page of Chef objects.
      *
-     * @param set the ResultSet containing Chef data.
+     * @param set         the ResultSet containing Chef data.
      * @param pageOptions options for pagination and sorting.
      * @return a Page of Chef objects containing the paginated results.
      * @throws SQLException if an error occurs while accessing the ResultSet.
@@ -253,9 +259,9 @@ public class ChefDAO {
     /**
      * Slices a list of Chef objects from a starting index to an ending index.
      *
-     * @param list the list of Chef objects to slice.
+     * @param list  the list of Chef objects to slice.
      * @param start the starting index.
-     * @param end the ending index.
+     * @param end   the ending index.
      * @return a sliced list of Chef objects.
      */
     private List<Chef> sliceList(List<Chef> list, int start, int end) {

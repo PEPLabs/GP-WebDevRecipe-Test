@@ -1,23 +1,18 @@
 package com.revature;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-// import org.junit.AfterClass; 
 import org.junit.jupiter.api.AfterAll;
-// import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
-// import org.junit.BeforeClass;
 import org.junit.jupiter.api.BeforeAll;
-// import org.junit.Test;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -43,11 +38,12 @@ public class AdminTest {
     private static WebDriverWait wait;
     private static Javalin app;
     private static JavascriptExecutor js;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(AdminTest.class.getName());
+    @SuppressWarnings("unused")
     private static Process httpServerProcess;
+    @SuppressWarnings("unused")
     private static String browserType;
-
-    // TESTING
 
     private static Javalin server;
     private static final int PORT = 8083;
@@ -57,6 +53,7 @@ public class AdminTest {
     private static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
     private static final boolean IS_ARM = OS_ARCH.contains("aarch64") || OS_ARCH.contains("arm");
     private static final boolean IS_WINDOWS = OS_NAME.contains("windows");
+    @SuppressWarnings("unused")
     private static final boolean IS_LINUX = OS_NAME.contains("linux");
     private static final boolean IS_MAC = OS_NAME.contains("mac");
 
@@ -65,10 +62,7 @@ public class AdminTest {
         try {
             printEnvironmentInfo();
 
-            // Start the backend programmatically
             int port = 8081;
-            // app = Main.main(new String[] { String.valueOf(port) });
-
             app = Main.startServer(port, true);
 
             // Starting the static Javalin Server
@@ -604,7 +598,7 @@ public class AdminTest {
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("ingredient-list")));
         String innerHTML = driver.findElement(By.id("ingredient-list")).getAttribute("innerHTML");
-        assertTrue("Expected ingredient to be added.", innerHTML.contains("salt"));
+        assertTrue(innerHTML.contains("salt"), "Expected ingredient to be added.");
 
         driver.findElement(By.id("back-link")).click();
         Thread.sleep(1000);
@@ -651,7 +645,7 @@ public class AdminTest {
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("ingredient-list")));
         String innerHTML = driver.findElement(By.id("ingredient-list")).getAttribute("innerHTML");
-        assertFalse("Expected ingredient to be deleted.", innerHTML.contains("tomato"));
+        assertFalse(innerHTML.contains("tomato"), "Expected ingredient to be deleted.");
 
         driver.findElement(By.id("back-link")).click();
         Thread.sleep(1000);

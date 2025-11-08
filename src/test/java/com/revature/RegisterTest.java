@@ -1,7 +1,7 @@
 package com.revature;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.Test;
 import java.io.File;
 import java.time.Duration;
@@ -32,18 +32,21 @@ public class RegisterTest {
     private WebDriverWait wait;
     private ClientAndServer mockServer;
     private MockServerClient mockServerClient;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(RegisterTest.class.getName());
     private Process httpServerProcess;
+    @SuppressWarnings("unused")
     private String browserType;
     
     private static final String OS_NAME = System.getProperty("os.name").toLowerCase();
     private static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
     private static final boolean IS_ARM = OS_ARCH.contains("aarch64") || OS_ARCH.contains("arm");
     private static final boolean IS_WINDOWS = OS_NAME.contains("windows");
+    @SuppressWarnings("unused")
     private static final boolean IS_LINUX = OS_NAME.contains("linux");
     private static final boolean IS_MAC = OS_NAME.contains("mac");
   
-    @Before
+    @BeforeEach
     public void setUp() throws InterruptedException {
         try {
             printEnvironmentInfo();
@@ -329,6 +332,7 @@ public class RegisterTest {
         return false;
     }
     
+    @SuppressWarnings("deprecation")
     private String startHttpServer(File htmlFile) throws Exception {
         int port = 8000 + (int)(Math.random() * 1000);
         String directory = htmlFile.getParent();
@@ -526,7 +530,7 @@ public class RegisterTest {
         }
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         System.out.println("\n=== TEARDOWN ===");
         cleanup();

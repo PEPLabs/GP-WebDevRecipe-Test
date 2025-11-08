@@ -23,18 +23,17 @@ public class IngredientDAO {
     /**
      * A utility class used for establishing connections to the database.
      */
-    @SuppressWarnings("unused")
     private ConnectionUtil connectionUtil;
 
     /**
-     * Constructs an IngredientDAO with the specified ConnectionUtil for database connectivity.
+     * Constructs an IngredientDAO with the specified ConnectionUtil for database
+     * connectivity.
      *
      * @param connectionUtil the utility used to connect to the database
      */
     public IngredientDAO(ConnectionUtil connectionUtil) {
         this.connectionUtil = connectionUtil;
     }
-
 
     /**
      * Retrieves an Ingredient record by its unique identifier.
@@ -45,7 +44,7 @@ public class IngredientDAO {
     public Ingredient getIngredientById(int id) {
         String sql = "SELECT * FROM INGREDIENT WHERE ID = ?";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? mapSingleRow(resultSet) : null;
@@ -65,7 +64,7 @@ public class IngredientDAO {
     public int createIngredient(Ingredient ingredient) {
         String sql = "INSERT INTO INGREDIENT (NAME) VALUES (?)";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, ingredient.getName());
             statement.executeUpdate();
 
@@ -130,7 +129,7 @@ public class IngredientDAO {
     public void updateIngredient(Ingredient ingredient) {
         String sql = "UPDATE INGREDIENT SET NAME = ? WHERE ID = ?";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, ingredient.getName());
             statement.setInt(2, ingredient.getId());
             statement.executeUpdate();
@@ -147,7 +146,7 @@ public class IngredientDAO {
     public List<Ingredient> getAllIngredients() {
         String sql = "SELECT * FROM INGREDIENT ORDER BY ID";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
             return mapRows(resultSet);
         } catch (SQLException ex) {
@@ -167,7 +166,7 @@ public class IngredientDAO {
         String sql = String.format("SELECT * FROM ingredient ORDER BY %s %s", pageOptions.getSortBy(),
                 pageOptions.getSortDirection());
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
             return pageResults(resultSet, pageOptions);
         } catch (SQLException e) {
@@ -185,7 +184,7 @@ public class IngredientDAO {
     public List<Ingredient> searchIngredients(String term) {
         String sql = "SELECT * FROM INGREDIENT WHERE NAME LIKE ? ORDER BY ID";
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, "%" + term + "%");
             ResultSet resultSet = statement.executeQuery();
             return mapRows(resultSet);
@@ -195,7 +194,8 @@ public class IngredientDAO {
     }
 
     /**
-     * Searches for Ingredient records by a search term in the name with pagination options.
+     * Searches for Ingredient records by a search term in the name with pagination
+     * options.
      *
      * @param term        the search term to filter Ingredient names.
      * @param pageOptions options for pagination and sorting.
@@ -205,7 +205,7 @@ public class IngredientDAO {
         String sql = String.format("SELECT * FROM ingredient WHERE name LIKE ? ORDER BY %s %s", pageOptions.getSortBy(),
                 pageOptions.getSortDirection());
         try (Connection connection = connectionUtil.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, "%" + term + "%");
             ResultSet resultSet = statement.executeQuery();
             return pageResults(resultSet, pageOptions);

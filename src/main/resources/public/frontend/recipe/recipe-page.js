@@ -64,7 +64,7 @@ window.addEventListener("DOMContentLoaded", () => {
           headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "*"
+            "Access-Control-Allow-Headers": "*",
           },
           redirect: "follow",
           referrerPolicy: "no-referrer",
@@ -145,26 +145,53 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // async function deleteRecipe() {
+  //   const name = deleteRecipeNameInput.value.trim();
+
+  //   let id = null;
+  //   const listItems = recipeListContainer.getElementsByTagName("li");
+  //   for (let i = 0; i < listItems.length; i++) {
+  //     if (listItems[i].textContent.includes(name)) {
+  //       id = i + 1; // assuming ID maps to list position (adjust if needed)
+  //       break;
+  //     }
+  //   }
+
+  //   if (!id) {
+  //     alert("Recipe not found in the list.");
+  //     return;
+  //   }
+
+  //   try {
+  //     const token = sessionStorage.getItem("auth-token");
+  //     const response = await fetch(`${BASE_URL}/recipes/${id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: "Bearer " + token,
+  //       },
+  //     });
+
+  //     if (!response.ok) throw new Error("Error deleting recipe.");
+
+  //     await getRecipes();
+  //     refreshRecipeList();
+  //   } catch (error) {
+  //     alert(error.message);
+  //   }
+  // }
+
   async function deleteRecipe() {
     const name = deleteRecipeNameInput.value.trim();
-
-    let id = null;
-    const listItems = recipeListContainer.getElementsByTagName("li");
-    for (let i = 0; i < listItems.length; i++) {
-      if (listItems[i].textContent.includes(name)) {
-        id = i + 1; // assuming ID maps to list position (adjust if needed)
-        break;
-      }
-    }
-
-    if (!id) {
-      alert("Recipe not found in the list.");
+    const recipe = recipes.find((r) => r.name === name); // ✅ find by name
+    if (!recipe) {
+      alert("Recipe not found.");
       return;
     }
 
     try {
       const token = sessionStorage.getItem("auth-token");
-      const response = await fetch(`${BASE_URL}/recipes/${id}`, {
+      const response = await fetch(`${BASE_URL}/recipes/${recipe.id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -181,41 +208,40 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-//   async function getRecipes() {
-//     try {
-//       const response = await fetch(`${BASE_URL}/recipes`);
-//       recipes = await response.json();
-//       refreshRecipeList();
-//     } catch (error) {
-//       alert("Failed to fetch recipes: " + error.message);
-//     }
-//   }
-async function getRecipes() {
-  try {
-    const token = sessionStorage.getItem("auth-token");
-    const response = await fetch(`${BASE_URL}/recipes`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    });
+  async function getRecipes() {
+    try {
+      const token = sessionStorage.getItem("auth-token");
+      const response = await fetch(`${BASE_URL}/recipes`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      });
 
-    if (!response.ok) throw new Error("Failed to fetch recipes.");
-    recipes = await response.json();
-    refreshRecipeList();
-  } catch (error) {
-    alert("Failed to fetch recipes: " + error.message);
+      if (!response.ok) throw new Error("Failed to fetch recipes.");
+      recipes = await response.json();
+      refreshRecipeList();
+    } catch (error) {
+      alert("Failed to fetch recipes: " + error.message);
+    }
   }
-}
 
-
+  // function refreshRecipeList() {
+  //   recipeListContainer.innerHTML = "";
+  //   for (let i = 0; i < recipes.length; i++) {
+  //     let element = document.createElement("li");
+  //     let ptag = document.createElement("p");
+  //     ptag.innerText = `${recipes[i].name} ${recipes[i].instructions}`;
+  //     element.appendChild(ptag);
+  //     recipeListContainer.appendChild(element);
+  //   }
+  // }
   function refreshRecipeList() {
     recipeListContainer.innerHTML = "";
-    for (let i = 0; i < recipes.length; i++) {
-      let element = document.createElement("li");
-      let ptag = document.createElement("p");
-      ptag.innerText = `${recipes[i].name} ${recipes[i].instructions}`;
-      element.appendChild(ptag);
+    for (let recipe of recipes) {
+      const element = document.createElement("li");
+      element.dataset.id = recipe.id; // ✅ store actual recipe ID
+      element.innerText = `${recipe.name} ${recipe.instructions}`;
       recipeListContainer.appendChild(element);
     }
   }

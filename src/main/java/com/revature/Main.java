@@ -1,11 +1,5 @@
 package com.revature;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
 import com.revature.controller.AuthenticationController;
 import com.revature.controller.IngredientController;
 import com.revature.controller.RecipeController;
@@ -46,7 +40,7 @@ public class Main {
     private static AdminMiddleware ADMIN_MIDDLEWARE;
 
     public static void main(String[] args) {
-        startServer(8080, true);
+        startServer(8081, true);
     }
 
     public static Javalin startServer(int preferredPort, boolean allowFallback) {
@@ -81,74 +75,6 @@ public class Main {
                     System.out.println("Port " + (port - 1) + " busy, retrying on " + port);
                 } else {
                     throw e;
-                }
-            }
-        }
-
-        if (port == 8080) {
-            int[] proxyPorts = { 8081, 8082, 8083 };
-
-            for (int proxyPort : proxyPorts) {
-                try {
-                    Javalin proxy = Javalin.create(config -> {
-                        // ✅ Enable simple permissive CORS
-                        config.bundledPlugins.enableCors(cors -> {
-                            cors.addRule(rule -> {
-                                rule.reflectClientOrigin = true; // dynamically reflects the request's Origin
-                                rule.allowCredentials = true;
-                                rule.exposeHeader("Authorization");
-                                rule.exposeHeader("Content-Type");
-
-                            });
-                        });
-                    });
-
-                    proxy.before(ctx -> {
-                        if ("OPTIONS".equalsIgnoreCase(ctx.req().getMethod())) {
-                            ctx.header("Access-Control-Allow-Origin", ctx.header("Origin"));
-                            ctx.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-                            ctx.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-                            ctx.status(200);
-                            return;
-                        }
-
-                        // Forward requests from proxy port to 8080
-                        String target = "http://localhost:8080" + ctx.path();
-                        if (ctx.queryString() != null && !ctx.queryString().isEmpty()) {
-                            target += "?" + ctx.queryString();
-                        }
-
-                        HttpClient client = HttpClient.newHttpClient();
-                        HttpRequest.BodyPublisher bodyPublisher = ctx.req().getContentLength() > 0
-                                ? HttpRequest.BodyPublishers.ofInputStream(() -> {
-                                    try {
-                                        InputStream inputStream = ctx.req().getInputStream();
-                                        return inputStream;
-                                    } catch (IOException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                })
-                                : HttpRequest.BodyPublishers.noBody();
-
-                        HttpRequest request = HttpRequest.newBuilder()
-                                .uri(java.net.URI.create(target))
-                                .method(ctx.req().getMethod(), bodyPublisher)
-                                .headers("Content-Type", "application/json")
-                                .build();
-
-                        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                        ctx.result(response.body());
-                        ctx.status(response.statusCode());
-                    });
-
-                    proxy.start(proxyPort);
-                    System.out.println("Forwarding proxy active: " + proxyPort + " → 8080");
-
-                } catch (Exception e) {
-                    System.out.println("Couldn't start proxy on " + proxyPort + ": " + e.getMessage());
-                    e.printStackTrace();
-
                 }
             }
         }

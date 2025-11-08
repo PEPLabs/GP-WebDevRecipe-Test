@@ -1,16 +1,16 @@
 package com.revature;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
@@ -33,8 +33,11 @@ public class RecipePersistenceTest {
     private static WebDriver driver;
     private static WebDriverWait wait;
     private static Javalin app;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(RecipePersistenceTest.class.getName());
+    @SuppressWarnings("unused")
     private static Process httpServerProcess;
+    @SuppressWarnings("unused")
     private static String browserType;
 
     // Architecture and system detection
@@ -42,18 +45,17 @@ public class RecipePersistenceTest {
     private static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
     private static final boolean IS_ARM = OS_ARCH.contains("aarch64") || OS_ARCH.contains("arm");
     private static final boolean IS_WINDOWS = OS_NAME.contains("windows");
+    @SuppressWarnings("unused")
     private static final boolean IS_LINUX = OS_NAME.contains("linux");
     private static final boolean IS_MAC = OS_NAME.contains("mac");
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws InterruptedException {
         try {
             printEnvironmentInfo();
 
             // Start the backend programmatically
             int port = 8081;
-            // app = Main.main(new String[] { String.valueOf(port) });
-
             app = Main.startServer(port, true);
 
             // Starting the static Javalin Server
@@ -94,7 +96,7 @@ public class RecipePersistenceTest {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         performLogout();
 
@@ -126,11 +128,6 @@ public class RecipePersistenceTest {
 
     private static void performLogin() {
         // go to relevant HTML page
-        // File loginFile = new
-        // File("src/main/resources/public/frontend/login/login-page.html");
-        // String loginPath = "file:///" + loginFile.getAbsolutePath().replace("\\",
-        // "/");
-        // driver.get(loginPath);
         driver.get("http://localhost:8083/login/login-page.html");
 
         // perform login functionality
@@ -444,7 +441,7 @@ public class RecipePersistenceTest {
         return baseArgs;
     }
 
-    @AfterClass
+    @AfterAll
     public static void stopServer() {
         try {
             if (server != null) {
@@ -484,6 +481,29 @@ public class RecipePersistenceTest {
     }
 
     @Test
+    public void displayRecipesOnInitTest() throws InterruptedException {
+
+        // check for any issues
+        handleUnexpectedAlerts(driver);
+
+        // refresh the page to trigger backend API call
+        driver.navigate().refresh();
+
+        // gather recipe list information
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("recipe-list")));
+        WebElement recipeList = driver.findElement(By.id("recipe-list"));
+        String innerHTML = recipeList.getAttribute("innerHTML");
+
+        // make assertions: recipe list should contain expected recipes
+        assertTrue(innerHTML.contains("carrot soup"), "Expected recipes to be displayed.");
+        assertTrue(innerHTML.contains("potato soup"), "Expected recipes to be displayed.");
+        assertTrue(innerHTML.contains("tomato soup"), "Expected recipes to be displayed.");
+        assertTrue(innerHTML.contains("lemon rice soup"), "Expected recipes to be displayed.");
+        assertTrue(innerHTML.contains("stone soup"), "Expected recipes to be displayed.");
+
+    }
+
+    @Test
     public void addRecipePostTest() {
         // Add a recipe
         WebElement nameInput = driver.findElement(By.id("add-recipe-name-input"));
@@ -499,30 +519,7 @@ public class RecipePersistenceTest {
         String innerHTML = recipeList.getAttribute("innerHTML");
 
         // Assert the result
-        assertTrue("Expected recipe to be added.", innerHTML.contains("Beef Stroganoff"));
-
-    }
-
-    @Test
-    public void displayRecipesOnInitTest() throws InterruptedException {
-
-        // check for any issues
-        handleUnexpectedAlerts(driver);
-
-        // refresh the page to trigger backend API call
-        driver.navigate().refresh();
-
-        // gather recipe list information
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("recipe-list")));
-        WebElement recipeList = driver.findElement(By.id("recipe-list"));
-        String innerHTML = recipeList.getAttribute("innerHTML");
-
-        // make assertions: recipe list should contain expected recipes
-        assertTrue("Expected recipes to be displayed.", innerHTML.contains("carrot soup"));
-        assertTrue("Expected recipes to be displayed.", innerHTML.contains("potato soup"));
-        assertTrue("Expected recipes to be displayed.", innerHTML.contains("tomato soup"));
-        assertTrue("Expected recipes to be displayed.", innerHTML.contains("lemon rice soup"));
-        assertTrue("Expected recipes to be displayed.", innerHTML.contains("stone soup"));
+        assertTrue(innerHTML.contains("Beef Stroganoff"), "Expected recipe to be added.");
 
     }
 
@@ -546,7 +543,7 @@ public class RecipePersistenceTest {
         String innerHTML = recipeList.getAttribute("innerHTML");
 
         // make assertion: recipe should be updated
-        assertTrue("Expected recipe to be updated.", innerHTML.contains("Updated instructions for carrot soup"));
+        assertTrue(innerHTML.contains("Updated instructions for carrot soup"), "Expected recipe to be updated.");
 
     }
 
@@ -564,7 +561,7 @@ public class RecipePersistenceTest {
         String innerHTML = recipeList.getAttribute("innerHTML");
 
         // make assertion: deleted recipe should not be in list
-        assertTrue("Expected recipe to be deleted.", !innerHTML.contains("stone soup"));
+        assertFalse(innerHTML.contains("stone soup"), "Expected recipe to be deleted.");
 
     }
 
@@ -584,11 +581,11 @@ public class RecipePersistenceTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("recipe-list")));
         String innerHTML = recipeList.getAttribute("innerHTML");
 
-        assertTrue("Expected potato soup recipe to be in list.", innerHTML.contains("potato soup"));
-        assertTrue("Expected tomato soup recipe to be in list.", innerHTML.contains("tomato soup"));
-        assertTrue("Expected stone soup recipe to NOT be in list.", !innerHTML.contains("stone soup"));
-        assertTrue("Expected carrot soup recipe to NOT be in list.", !innerHTML.contains("carrot soup"));
-        assertTrue("Expected lemon rice soup recipe to NOT be in list.", !innerHTML.contains("lemon rice soup"));
+        assertTrue(innerHTML.contains("potato soup"), "Expected potato soup recipe to be in list.");
+        assertTrue(innerHTML.contains("tomato soup"), "Expected tomato soup recipe to be in list.");
+        assertFalse(innerHTML.contains("stone soup"), "Expected stone soup recipe to NOT be in list.");
+        assertFalse(innerHTML.contains("carrot soup"), "Expected carrot soup recipe to NOT be in list.");
+        assertFalse(innerHTML.contains("lemon rice soup"), "Expected lemon rice soup recipe to NOT be in list.");
 
     }
 

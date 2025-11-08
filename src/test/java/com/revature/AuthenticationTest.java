@@ -1,22 +1,18 @@
 package com.revature;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -46,26 +42,28 @@ public class AuthenticationTest {
     private static WebDriverWait wait;
     private static Javalin app;
     private static JavascriptExecutor js;
+    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(AuthenticationTest.class.getName());
+    @SuppressWarnings("unused")
     private static Process httpServerProcess;
+    @SuppressWarnings("unused")
     private static String browserType;
 
     private static final String OS_NAME = System.getProperty("os.name").toLowerCase();
     private static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
     private static final boolean IS_ARM = OS_ARCH.contains("aarch64") || OS_ARCH.contains("arm");
     private static final boolean IS_WINDOWS = OS_NAME.contains("windows");
+    @SuppressWarnings("unused")
     private static final boolean IS_LINUX = OS_NAME.contains("linux");
     private static final boolean IS_MAC = OS_NAME.contains("mac");
 
-    @BeforeClass
+    @BeforeAll
     public static void setUp() throws InterruptedException {
         try {
             printEnvironmentInfo();
 
             int port = 8081;
-            // app = Main.main(new String[] { String.valueOf(port) });
             app = Main.startServer(port, true);
-
 
             // Starting the static Javalin Server
 
@@ -99,14 +97,14 @@ public class AuthenticationTest {
         }
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDown() {
         System.out.println("\n=== TEARDOWN ===");
         cleanup();
         System.out.println("Teardown completed");
     }
 
-    @After
+    @AfterEach
     public void tearDownBetween() {
         performLogout();
     }
@@ -377,8 +375,7 @@ public class AuthenticationTest {
         return baseArgs;
     }
 
-
-    @AfterClass
+    @AfterAll
     public static void stopServer() {
         try {
             if (server != null) {
@@ -416,12 +413,10 @@ public class AuthenticationTest {
         }
     }
 
-
     @Test
     public void authTest1() {
 
         driver.get("http://localhost:8083/login/login-page.html");
-
 
         WebElement usernameInput = driver.findElement(By.id("login-input"));
         WebElement passwordInput = driver.findElement(By.id("password-input"));
@@ -433,9 +428,8 @@ public class AuthenticationTest {
 
         wait.until(ExpectedConditions.urlContains("recipe-page"));
 
-
         Object authToken = js.executeScript("return window.sessionStorage.getItem('auth-token');");
-        assertNotNull("auth-token should not be null after login", authToken);
+        assertNotNull(authToken, "auth-token should not be null after login");
 
         WebElement nameInput = driver.findElement(By.id("delete-recipe-name-input"));
         WebElement deleteButton = driver.findElement(By.id("delete-recipe-submit-input"));
@@ -444,14 +438,13 @@ public class AuthenticationTest {
         deleteButton.click();
 
         boolean alert = isAlertPresent(driver);
-        assertFalse("Admin user should not trigger alert on delete", alert);
+        assertFalse(alert, "Admin user should not trigger alert on delete");
     }
 
     @Test
     public void authTest2() {
 
         driver.get("http://localhost:8083/login/login-page.html");
-
 
         try {
             WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(2));
@@ -462,7 +455,6 @@ public class AuthenticationTest {
             System.out.println("No alert before login, proceeding...");
         }
 
-
         WebElement usernameInput = driver.findElement(By.id("login-input"));
         WebElement passwordInput = driver.findElement(By.id("password-input"));
         WebElement loginButton = driver.findElement(By.id("login-button"));
@@ -471,13 +463,10 @@ public class AuthenticationTest {
         passwordInput.sendKeys("redbarron");
         loginButton.click();
 
-
         wait.until(ExpectedConditions.urlContains("recipe-page"));
 
-
         Object authToken = js.executeScript("return window.sessionStorage.getItem('auth-token');");
-        assertNotNull("auth-token should not be null after login", authToken);
-
+        assertNotNull(authToken, "auth-token should not be null after login");
 
         WebElement nameInput = driver.findElement(By.id("delete-recipe-name-input"));
         WebElement deleteButton = driver.findElement(By.id("delete-recipe-submit-input"));
@@ -489,7 +478,7 @@ public class AuthenticationTest {
         boolean isAlertVisible = isAlertPresent(driver);
 
         postAlert.dismiss();
-        assertTrue("Non-admin user should trigger alert on delete", isAlertVisible);
+        assertTrue(isAlertVisible, "Non-admin user should trigger alert on delete");
     }
 
     public static boolean isAlertPresent(WebDriver driver) {

@@ -73,16 +73,7 @@ public class AuthenticationController {
      * @param ctx the Javalin context containing the chef login credentials in the
      *            request body
      */
-    // public void login(Context ctx) {
-    // Chef chefCredentials = ctx.bodyAsClass(Chef.class);
-    // String token = authService.login(chefCredentials);
 
-    // if (token != null) {
-    // ctx.status(200).result(token).header("Authorization", token);
-    // } else {
-    // ctx.status(401).result("Invalid username or password");
-    // }
-    // }
     public void login(Context ctx) {
         Chef chefCredentials = ctx.bodyAsClass(Chef.class);
         String token = authService.login(chefCredentials);

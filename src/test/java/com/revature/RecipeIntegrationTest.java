@@ -1,7 +1,5 @@
 package com.revature;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -116,9 +115,9 @@ class RecipeIntegrationTest {
 		Request request = new Request.Builder().url(BASE_URL + "/recipes/2").addHeader("Authorization", token).get()
 				.build();
 		Response response = client.newCall(request).execute();
-		assertEquals(200, response.code(),
+		Assertions.assertEquals(200, response.code(),
 				"Should return with a success status code.  Expected: 200 Actual: " + response.code());
-		assertEquals(new JavalinJackson().toJsonString(recipeList.get(1), Recipe.class),
+		Assertions.assertEquals(new JavalinJackson().toJsonString(recipeList.get(1), Recipe.class),
 				response.body().string(), "Single recipe should be returned a json");
 	}
 
@@ -127,7 +126,7 @@ class RecipeIntegrationTest {
 		Request request = new Request.Builder().url(BASE_URL + "/recipes").addHeader("Authorization", token).get()
 				.build();
 		Response response = client.newCall(request).execute();
-		assertEquals(200, response.code());
+		Assertions.assertEquals(200, response.code());
 	}
 
 	@Test
@@ -140,13 +139,13 @@ class RecipeIntegrationTest {
 				.addHeader("Authorization", "Bearer " + token)
 				.post(recipeBody).build();
 		Response postResponse = client.newCall(recipeRequest).execute();
-		assertEquals(201, postResponse.code(), postResponse.body().string());
+		Assertions.assertEquals(201, postResponse.code(), postResponse.body().string());
 		Request getRequest = new Request.Builder().url(BASE_URL + "/recipes/6")
 				.addHeader("Authorization", "Bearer " + token).get()
 				.build();
 		Response getResponse = client.newCall(getRequest).execute();
-		assertEquals(200, getResponse.code());
-		assertEquals(new JavalinJackson().toJsonString(newRecipe, Recipe.class), getResponse.body().string(),
+		Assertions.assertEquals(200, getResponse.code());
+		Assertions.assertEquals(new JavalinJackson().toJsonString(newRecipe, Recipe.class), getResponse.body().string(),
 				"Newly created Recipe should be returned a json");
 
 	}
@@ -160,7 +159,7 @@ class RecipeIntegrationTest {
 		Request recipeRequest = new Request.Builder().url(BASE_URL + "/recipes/1").addHeader("Authorization", token)
 				.put(recipeBody).build();
 		Response putResponse = client.newCall(recipeRequest).execute();
-		assertEquals(200, putResponse.code());
+		Assertions.assertEquals(200, putResponse.code());
 	}
 
 	@Test
@@ -170,11 +169,11 @@ class RecipeIntegrationTest {
 				.addHeader("Authorization", "Bearer" + token).delete()
 				.build();
 		Response response = client.newCall(request).execute();
-		assertEquals(200, response.code(), () -> "Recipe should delete successfully");
+		Assertions.assertEquals(200, response.code(), () -> "Recipe should delete successfully");
 		Request getRequest = new Request.Builder().url(BASE_URL + "/recipes/2").get().addHeader("Authorization", token)
 				.build();
 		Response getResponse = client.newCall(getRequest).execute();
-		assertEquals(404, getResponse.code(), () -> "After deletion, reicpe should non be found");
+		Assertions.assertEquals(404, getResponse.code(), () -> "After deletion, reicpe should non be found");
 
 	}
 
@@ -188,7 +187,7 @@ class RecipeIntegrationTest {
 				.url(BASE_URL + "/recipes?term=ato&page=2&pageSize=1&sortBy=name&sortDirection=asc").get()
 				.addHeader("Authorization", token).build();
 		Response response = client.newCall(request).execute();
-		assertEquals(filteredResultJSON,
+		Assertions.assertEquals(filteredResultJSON,
 				response.body().string(),
 				"The single result should be returned");
 	}
