@@ -19,8 +19,8 @@ import io.javalin.Javalin;
 
 /**
  * Allows manual or automated startup of the backend server.
- * Manual: runs on 8080 (fallbacks to next free port)
- * Tests: call startServer(8080, true) to auto-assign free port
+ * Manual: runs on 8081
+ * Tests: call startServer(8081, true) to auto-assign free port.
  */
 public class Main {
 
